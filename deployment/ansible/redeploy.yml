@@ -1,0 +1,37 @@
+---
+- name: Update application
+  hosts: server
+  tasks:
+    - name: Ping hosts
+      ping:
+
+    - name: Pull latest source code
+      git:
+        repo: "{{ repository }}"
+        accept_hostkey: yes
+        dest: /home/{{ user }}/{{ domain }}
+        single_branch: yes
+        version: "{{ branch }}"
+      become: yes
+      become_user: "{{ user }}"
+
+    - name: Install Node.js dependencies
+      command: yarn install
+      args:
+        chdir: /home/{{ user }}/{{ domain }}
+      become: yes
+      become_user: "{{ user }}"
+
+    - name: Restart Node.js app
+      command: pm2 restart {{ domain }}.config.js
+      args:
+        chdir: /home/{{ user }}
+      become: yes
+      become_user: "{{ user }}"
+
+    - name: Save PM2 process list
+      command: pm2 save
+      args:
+        chdir: /home/{{ user }}
+      become: yes
+      become_user: "{{ user }}"

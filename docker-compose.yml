@@ -1,0 +1,55 @@
+version: "3"
+
+services:
+  installer:
+    build: .
+    command: yarn install --frozen-lockfile
+    platform: linux/amd64
+    restart: "no"
+    volumes:
+      - .:/app
+
+  mongo:
+    image: mongo
+    environment:
+      MONGO_INITDB_DATABASE: wapper
+    volumes:
+      - mongo-data:/data/db
+
+  redis:
+    image: redis:5-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  redis-commander:
+    image: rediscommander/redis-commander
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    ports:
+      - "8081:8081"
+
+  wapi:
+    build: .
+    cap_add:
+      - SYS_ADMIN
+    command: npm start
+    depends_on:
+      installer:
+        condition: service_completed_successfully
+    env_file:
+      - .env
+    platform: linux/amd64
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - wweb-auth:/userdata/auth
+      - wweb-cache:/userdata/cache
+
+volumes:
+  mongo-data:
+  redis-data:
+  wweb-auth:
+  wweb-cache:

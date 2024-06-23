@@ -1,0 +1,801 @@
+{
+  "info": {
+    "_postman_id": "3dd2105b-925a-4ada-abc1-27daf66137f6",
+    "name": "Wapper",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "16000625"
+  },
+  "item": [
+    {
+      "name": "Instances",
+      "item": [
+        {
+          "name": "Create new instance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const { id, token } = pm.response.json();",
+                  "",
+                  "pm.collectionVariables.set('INSTANCE_ID', id);",
+                  "pm.collectionVariables.set('INSTANCE_TOKEN', token);",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"webhook\": \"{{WEBHOOK_URL}}\"\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_ENDPOINT}}/admin/instances",
+              "host": ["{{API_ENDPOINT}}"],
+              "path": ["admin", "instances"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get instance details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_ENDPOINT}}/admin/instances/{{INSTANCE_ID}}",
+              "host": ["{{API_ENDPOINT}}"],
+              "path": ["admin", "instances", "{{INSTANCE_ID}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete instance",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{API_ENDPOINT}}/admin/instances/{{INSTANCE_ID}}",
+              "host": ["{{API_ENDPOINT}}"],
+              "path": ["admin", "instances", "{{INSTANCE_ID}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get instance token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const { token } = pm.response.json();",
+                  "",
+                  "pm.collectionVariables.set('INSTANCE_TOKEN', token);",
+                  ""
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_ENDPOINT}}/admin/instances/{{INSTANCE_ID}}/token",
+              "host": ["{{API_ENDPOINT}}"],
+              "path": ["admin", "instances", "{{INSTANCE_ID}}", "token"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get instance webhooks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{API_ENDPOINT}}/admin/instances/{{INSTANCE_ID}}/webhooks",
+              "host": ["{{API_ENDPOINT}}"],
+              "path": ["admin", "instances", "{{INSTANCE_ID}}", "webhooks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Set instance webhooks",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"type\": \"client\",\n    \"url\": \"{{WEBHOOK_URL}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{API_ENDPOINT}}/admin/instances/{{INSTANCE_ID}}/webhooks",
+              "host": ["{{API_ENDPOINT}}"],
+              "path": ["admin", "instances", "{{INSTANCE_ID}}", "webhooks"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Restart an instance",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{API_ENDPOINT}}/admin/instances/{{INSTANCE_ID}}/restart",
+              "host": ["{{API_ENDPOINT}}"],
+              "path": ["admin", "instances", "{{INSTANCE_ID}}", "restart"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Start an instance",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{API_ENDPOINT}}/admin/instances/{{INSTANCE_ID}}/start",
+              "host": ["{{API_ENDPOINT}}"],
+              "path": ["admin", "instances", "{{INSTANCE_ID}}", "start"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Stop an instance",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{API_ENDPOINT}}/admin/instances/{{INSTANCE_ID}}/stop",
+              "host": ["{{API_ENDPOINT}}"],
+              "path": ["admin", "instances", "{{INSTANCE_ID}}", "stop"]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "basic",
+        "basic": [
+          {
+            "key": "password",
+            "value": "{{ADMIN_PASSWORD}}",
+            "type": "string"
+          },
+          {
+            "key": "username",
+            "value": "{{ADMIN_USER}}",
+            "type": "string"
+          }
+        ]
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [""]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [""]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Get QR code",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text",
+            "disabled": true
+          }
+        ],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/qr",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "qr"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get connection status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/status",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "status"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get chats",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const { chats } = pm.response.json();",
+              "",
+              "pm.collectionVariables.set('CHAT_ID', chats[0].id);",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/chats",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "chats"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get chat by ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [""],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/chats/{{CHAT_ID}}",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "chats", "{{CHAT_ID}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get messages by chat ID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [""],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/chats/{{CHAT_ID}}/messages?limit=100",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "chats", "{{CHAT_ID}}", "messages"],
+          "query": [
+            {
+              "key": "limit",
+              "value": "100"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get contacts",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const { contacts } = pm.response.json();",
+              "",
+              "pm.collectionVariables.set('CONTACT_ID', contacts[0].id);",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/contacts",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "contacts"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get contact by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/contacts/{{CONTACT_ID}}",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "contacts", "{{CONTACT_ID}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get groups by contact ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/contacts/{{CONTACT_ID}}/groups",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "contacts", "{{CONTACT_ID}}", "groups"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get groups",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const { groups } = pm.response.json();",
+              "",
+              "pm.collectionVariables.set('GROUP_ID', groups[0].id);",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/groups",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "groups"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get group by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/groups/{{GROUP_ID}}",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "groups", "{{GROUP_ID}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get group participants by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/groups/{{GROUP_ID}}/participants",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "groups", "{{GROUP_ID}}", "participants"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Send buttons",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [""],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"text\": \"Do you see below buttons?\",\n    \"buttons\": [\n        { \"label\": \"Yes\" },\n        { \"label\": \"No\" }\n    ],\n    \"title\": \"This text should show at top.\",\n    \"footer\": \"Bye bye fella!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/chats/{{CHAT_ID}}/buttons",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "chats", "{{CHAT_ID}}", "buttons"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Send contact",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [""],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"number\": \"919876543210\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/chats/{{CHAT_ID}}/contact",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "chats", "{{CHAT_ID}}", "contact"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Send file (document)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [""],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "type",
+              "value": "document",
+              "type": "text"
+            },
+            {
+              "key": "name",
+              "value": "test document.pdf",
+              "type": "text"
+            },
+            {
+              "key": "attachment",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "quote",
+              "value": "",
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/chats/{{CHAT_ID}}/file",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "chats", "{{CHAT_ID}}", "file"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Send file (photo/video)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [""],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "type",
+              "value": "photo",
+              "type": "text"
+            },
+            {
+              "key": "caption",
+              "value": "This is a media caption",
+              "type": "text"
+            },
+            {
+              "key": "attachment",
+              "type": "file",
+              "src": []
+            },
+            {
+              "key": "quote",
+              "value": "",
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/chats/{{CHAT_ID}}/file",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "chats", "{{CHAT_ID}}", "file"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Send list",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [""],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"text\": \"Please choose one of the many options.\",\n    \"label\": \"See options\",\n    \"sections\": [\n        {\n            \"title\": \"Products\",\n            \"rows\": [\n                { \"title\": \"Hash\" },\n                { \"title\": \"Marijuana\" }\n            ]\n        },\n        {\n            \"title\": \"Services\",\n            \"rows\": [\n                { \"title\": \"Heal\" },\n                { \"title\": \"Kill\" }\n            ]\n        }\n    ],\n    \"title\": \"This text should show at top.\",\n    \"footer\": \"Bye bye fella!\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/chats/{{CHAT_ID}}/list",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "chats", "{{CHAT_ID}}", "list"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Send location",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [""],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"latitude\": \"38.8951\",\n    \"longitude\": \"-77.0364\",\n    \"description\": \"Don't come here\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/chats/{{CHAT_ID}}/location",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "chats", "{{CHAT_ID}}", "location"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Send text",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [""],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"text\": \"Greetings 🥶 woman!\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/chats/{{CHAT_ID}}/text",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "chats", "{{CHAT_ID}}", "text"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Validate",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [""],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"number\": \"919876543210\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/validate",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "validate"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Logout",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [""],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "url": {
+          "raw": "{{API_ENDPOINT}}/wapi/logout",
+          "host": ["{{API_ENDPOINT}}"],
+          "path": ["wapi", "logout"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{INSTANCE_TOKEN}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "ADMIN_USER",
+      "value": "DummyUser",
+      "type": "string"
+    },
+    {
+      "key": "ADMIN_PASSWORD",
+      "value": "InsecurePassword",
+      "type": "string"
+    },
+    {
+      "key": "API_ENDPOINT",
+      "value": "http://127.0.0.1:3000",
+      "type": "string"
+    },
+    {
+      "key": "CHAT_ID",
+      "value": "919876543210@c.us"
+    },
+    {
+      "key": "CONTACT_ID",
+      "value": "919876543210@c.us"
+    },
+    {
+      "key": "GROUP_ID",
+      "value": "919876543210-1658563205@g.us",
+      "type": "string"
+    },
+    {
+      "key": "INSTANCE_ID",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "INSTANCE_TOKEN",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "WEBHOOK_URL",
+      "value": "https://example.com/webhook",
+      "type": "string"
+    }
+  ]
+}

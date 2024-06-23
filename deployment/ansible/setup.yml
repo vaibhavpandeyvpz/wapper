@@ -1,0 +1,114 @@
+---
+- name: Setup web server
+  hosts: server
+  tasks:
+    - name: Ping hosts
+      ping:
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+
+    - name: Create a new user
+      user:
+        name: "{{ user }}"
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_file: .ssh/id_rsa
+        groups: www-data
+        append: yes
+        shell: /bin/bash
+      register: created_user
+
+    - name: Replace Nginx user
+      replace:
+        path: /etc/nginx/nginx.conf
+        regexp: "^user www-data;"
+        replace: user {{ user }};
+
+    - name: Increase max upload size
+      lineinfile:
+        path: /etc/nginx/nginx.conf
+        regexp: "^client_max_body_size"
+        insertafter: http {
+        line: client_max_body_size 100m;
+
+    - name: Restart Nginx service
+      systemd_service:
+        name: nginx
+        state: restarted
+        enabled: yes
+
+    - name: Include Google's signing key
+      apt_key:
+        url: "https://dl-ssl.google.com/linux/linux_signing_key.pub"
+
+    - name: Install Chrome's debian repository
+      copy:
+        content: "deb https://dl.google.com/linux/chrome/deb/ stable main"
+        dest: /etc/apt/sources.list.d/google-chrome.list
+        mode: "0644"
+
+    - name: Update apt-get cache
+      apt:
+        update_cache: yes
+
+    - name: Install Google Chrome
+      apt:
+        pkg:
+          - fonts-noto
+          - google-chrome-stable
+
+    - name: Install Certbot
+      apt:
+        name: python3-certbot-nginx
+
+    - name: Setup cron for Certbot
+      cron:
+        name: Certbot auto-renew
+        minute: "0"
+        hour: "12"
+        job: /usr/bin/certbot renew --quiet
+
+    - name: Install Node.js repo
+      shell: curl -fsSL https://deb.nodesource.com/setup_{{ node.version }}.x | bash -
+
+    - name: Install Node.js
+      apt:
+        name: nodejs
+
+    - name: Install Yarn
+      npm:
+        name: yarn
+        global: yes
+
+    - name: Install PM2
+      npm:
+        name: pm2
+        global: yes
+
+    - name: Deny incoming traffic via firewall
+      community.general.ufw:
+        default: deny
+        direction: incoming
+
+    - name: Permit outgoing traffic via firewall
+      community.general.ufw:
+        default: allow
+        direction: outgoing
+
+    - name: Enable HTTP and SSH via firewall
+      community.general.ufw:
+        rule: allow
+        name: "{{ item }}"
+      loop:
+        - Nginx Full
+        - OpenSSH
+
+    - name: Enable (UFW) firewall
+      community.general.ufw:
+        state: enabled
+
+    - name: Display SSH key
+      debug:
+        msg: "ssh_key_fingerprint={{ created_user.ssh_public_key }}"

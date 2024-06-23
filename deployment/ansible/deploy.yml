@@ -1,0 +1,120 @@
+---
+- name: Setup application
+  hosts: server
+  tasks:
+    - name: Include Terraform variables
+      include_vars:
+        file: ../variables.tf.yml
+
+    - name: Ping hosts
+      ping:
+
+    - name: Clone source code
+      git:
+        repo: "{{ repository }}"
+        accept_hostkey: yes
+        dest: /home/{{ user }}/{{ domain }}
+        single_branch: yes
+        version: "{{ branch }}"
+      become: yes
+      become_user: "{{ user }}"
+
+    - name: Install Node.js dependencies
+      command: yarn install
+      args:
+        chdir: /home/{{ user }}/{{ domain }}
+      become: yes
+      become_user: "{{ user }}"
+
+    - name: Create auth credentials
+      set_fact:
+        auth:
+          username: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_lowercase', 'digits'], length=8) }}"
+          password: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_lowercase', 'digits'], length=16) }}"
+
+    - name: Create JWT credentials
+      set_fact:
+        jwt:
+          secret: "{{ lookup('ansible.builtin.password', '/dev/null', chars=['ascii_lowercase', 'digits'], length=32) }}"
+
+    - name: Create PM2 config
+      copy:
+        dest: /home/{{ user }}/{{ domain }}.config.js
+        mode: "0644"
+        content: |
+          module.exports = {
+            apps: [
+              {
+                name: "server",
+                script: "server.js",
+                cwd: "/home/{{ user }}/{{ domain }}",
+                env: {
+                  ADMIN_USER: "{{ auth.username }}",
+                  ADMIN_PASSWORD: "{{ auth.password }}",
+                  CHROME_BINARY: "/usr/bin/google-chrome-stable",
+                  DEBUG: "wapper:*",
+                  JWT_SECRET: "{{ jwt.secret }}",
+                  MONGO_URL: "mongodb+srv://{{ mongo.user }}:{{ mongo.password }}@{{ mongo.host }}?tls=true",
+                  MONGO_DATABASE: "{{ domain | replace('.', '') }}",
+                  NODE_ENV: "{{ env }}",
+                  PORT: "{{ app.port }}",
+                  REDIS_URL: "rediss://:{{ redis.password }}@{{ redis.host }}:{{ redis.port }}",
+                  WWEBJS_AUTH_PATH: "/home/{{ user }}/{{ domain }}/.wwebjs_auth",
+                  WWEBJS_CACHE_PATH: "/home/{{ user }}/{{ domain }}/.wwebjs_cache",
+                },
+              },
+            ],
+          }
+
+    - name: Start Node.js app
+      command: pm2 start {{ domain }}.config.js
+      args:
+        chdir: /home/{{ user }}
+      become: yes
+      become_user: "{{ user }}"
+
+    - name: Save PM2 process list
+      command: pm2 save
+      args:
+        chdir: /home/{{ user }}
+      become: yes
+      become_user: "{{ user }}"
+
+    - name: Create Nginx vhost config
+      copy:
+        dest: /etc/nginx/sites-available/{{ domain }}
+        mode: "0644"
+        content: |
+          server {
+            listen 80;
+            listen [::]:80;
+
+            server_name {{ domain }};
+
+            location / {
+              proxy_pass http://127.0.0.1:{{ app.port }};
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection 'upgrade';
+              proxy_set_header Host $host;
+              proxy_cache_bypass $http_upgrade;
+            }
+          }
+
+    - name: Enable vhost config
+      file:
+        src: /etc/nginx/sites-available/{{ domain }}
+        dest: /etc/nginx/sites-enabled/{{ domain }}
+        state: link
+
+    - name: Restart Nginx service
+      systemd_service:
+        name: nginx
+        state: restarted
+
+    - name: Install SSL certificate
+      command: certbot --non-interactive --agree-tos -m {{ admin }} --nginx --redirect -d {{ domain }}
+
+    - name: Default API credentials
+      debug:
+        msg: "username={{ auth.username }};password={{ auth.password }}"

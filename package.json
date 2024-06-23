@@ -1,0 +1,47 @@
+{
+  "dependencies": {
+    "@koa/multer": "^3.0.0",
+    "@koa/router": "^11.0.1",
+    "axios": "^0.27.2",
+    "debug": "^4.3.4",
+    "ioredis": "^5.2.1",
+    "joi": "^17.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.13.4",
+    "koa-basic-auth": "^4.0.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-json": "^2.0.2",
+    "koa-jwt": "^4.0.3",
+    "koa-logger": "^3.2.1",
+    "koa-ratelimit": "^5.0.1",
+    "koa-response-time": "^2.1.0",
+    "koa-static": "^5.0.0",
+    "luxon": "^3.0.1",
+    "mongodb": "^4.8.0",
+    "mongoose": "^8.2.1",
+    "multer": "^1.4.5-lts.1",
+    "pm2": "^5.2.0",
+    "qrcode": "^1.5.3",
+    "tmp": "^0.2.1",
+    "uuid": "^8.3.2",
+    "whatsapp-web.js": "^1.24.0",
+    "yargs": "^17.5.1"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "husky": "^8.0.1",
+    "lint-staged": ">=10",
+    "nodemon": "^2.0.19",
+    "prettier": "2.7.1"
+  },
+  "lint-staged": {
+    "*.{css,js,json,md}": "prettier --write"
+  },
+  "main": "server.js",
+  "name": "wapper",
+  "private": true,
+  "scripts": {
+    "prepare": "husky install",
+    "start": "DEBUG=wapper:* nodemon ."
+  }
+}
