@@ -1,6 +1,6 @@
 # wapper
 
-Fully-featured [Node.js](https://nodejs.org/en/) API to deploy instant bots on [WhatsApp](https://www.whatsapp.com/) Web.
+Fully-featured [Node.js](https://nodejs.org/en/) API to deploy instant bots built on [WhatsApp](https://www.whatsapp.com/) Web.
 It allows to send text, location, contact, documents or media messages in bulk or listen/respond to incoming messages using HTTP webhooks.
 
 Powered by [whatsapp-web.js](https://wwebjs.dev/) and built using [Koa](https://koajs.com/), [Mongo](https://www.mongodb.com/), [Redis](https://redis.io/) and [PM2](https://pm2.keymetrics.io/).
