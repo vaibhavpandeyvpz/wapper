@@ -65,7 +65,7 @@ $ pm2 save
 
 ### Disclaimer
 
-Built for research and personal usages only, use as your own risk.
+Built for research and personal usages only, use at your own risk.
 This project is not affiliated, associated, authorized or endorsed by WhatsApp or any of its subsidiaries.
 WhatsApp as well as related names, marks, emblems and images are registered trademarks of their respective owners.
 
